@@ -8,20 +8,8 @@ const router = express.Router()
  */
 router.get('/comics', async (req, res) => {
     try {
-        const { limit, skip, title } = req.body
-
-        // Control rules of API usages
-        if (limit && typeof limit !== 'number') {
-            return res.status(400).json({ message: 'limit must be a number' })
-        }
-        if (skip && typeof skip !== 'number') {
-            return res.status(400).json({ message: 'skip must be a number' })
-        }
-        if (skip && !limit) {
-            return res
-                .status(400)
-                .json({ message: `skip must be use with "limit"` })
-        }
+        const { limit, skip, title } = req.query
+        console.log(limit)
 
         /* Build the url to fetch */
         const queryOptions = []
