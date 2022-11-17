@@ -8,7 +8,7 @@ const router = express.Router()
  */
 router.get('/comics', async (req, res) => {
     try {
-        const { limit, skip, title } = req.query
+        const { limit, skip, title, id } = req.query
         console.log(limit)
 
         /* Build the url to fetch */
@@ -30,6 +30,24 @@ router.get('/comics', async (req, res) => {
 
         /* Fetch data */
         const response = await axios.get(urlToFetch)
+
+        /* Add serach by id*/
+        if (id && (limit || skip || title)) {
+            return res.status(400).json({
+                message: " id can't be use with limit, ski or title query",
+            })
+        }
+
+        if (id) {
+            const findSingleComics = response.data.results.find(
+                (singleComics) => singleComics._id.includes(id)
+            )
+            if (findSingleComics) {
+                response.data = findSingleComics
+            } else {
+                response.data = null
+            }
+        }
         res.status(200).json(response.data)
     } catch (error) {
         res.status(400).json({ message: error.message })
