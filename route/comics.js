@@ -6,7 +6,7 @@ const router = express.Router()
 /**
  * Get a list of comics
  */
-router.get('/comics', async (req, res) => {
+router.get('/allComics', async (req, res) => {
     try {
         const { limit, skip, title, id } = req.query
         console.log(limit)
@@ -33,7 +33,7 @@ router.get('/comics', async (req, res) => {
 
         /* Add serach by id*/
         if (id && (limit || skip || title)) {
-            return res.status(400).json({
+            res.status(400).json({
                 message: " id can't be use with limit, ski or title query",
             })
         }
@@ -55,9 +55,37 @@ router.get('/comics', async (req, res) => {
 })
 
 /**
+ * Get the infos of a specific comics
+ */
+router.get('/singleComics/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+
+        // is all comics
+        const urlToFetch = `${process.env.REACTEUR_MARVEL_API_URL}/comics?apiKey=${process.env.REACTEUR_MARVEL_API_KEY}`
+
+        /* Fetch data */
+        const response = await axios.get(urlToFetch)
+
+        /*build response*/
+        const findSingleComics = response.data.results.find((singleComics) =>
+            singleComics._id.includes(id)
+        )
+        if (findSingleComics) {
+            response.data = findSingleComics
+        } else {
+            response.data = null
+        }
+        res.status(200).json(response.data)
+    } catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+})
+
+/**
  * Get a list of comics containing a specific character
  */
-router.get('/comics/:id', async (req, res) => {
+router.get('/comicsByCharacters/:id', async (req, res) => {
     try {
         const { id } = req.params
 

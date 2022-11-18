@@ -6,7 +6,7 @@ const router = express.Router()
 /**
  * Get a list of characters
  */
-router.get('/characters', async (req, res) => {
+router.get('/allCharacters', async (req, res) => {
     try {
         const { limit, skip, title } = req.query
 
@@ -38,7 +38,7 @@ router.get('/characters', async (req, res) => {
 /**
  * Get the infos of a specific character
  */
-router.get('/character/:id', async (req, res) => {
+router.get('/singleCharacter/:id', async (req, res) => {
     try {
         const { id } = req.params
 
