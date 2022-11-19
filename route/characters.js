@@ -8,7 +8,7 @@ const router = express.Router()
  */
 router.get('/allCharacters', async (req, res) => {
     try {
-        const { limit, skip, title } = req.query
+        const { limit, skip, term } = req.query
 
         /* Build the url to fetch */
         const queryOptions = []
@@ -18,8 +18,8 @@ router.get('/allCharacters', async (req, res) => {
         if (skip) {
             queryOptions.push(`&skip=${skip}`)
         }
-        if (title) {
-            queryOptions.push(`&title=${title}`)
+        if (term) {
+            queryOptions.push(`&name=${term}`)
         }
         const urlToFetch = `${
             process.env.REACTEUR_MARVEL_API_URL

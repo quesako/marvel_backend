@@ -8,7 +8,7 @@ const router = express.Router()
  */
 router.get('/allComics', async (req, res) => {
     try {
-        const { limit, skip, title, id } = req.query
+        const { limit, skip, term } = req.query
         console.log(limit)
 
         /* Build the url to fetch */
@@ -19,8 +19,8 @@ router.get('/allComics', async (req, res) => {
         if (skip) {
             queryOptions.push(`&skip=${skip}`)
         }
-        if (title) {
-            queryOptions.push(`&title=${title}`)
+        if (term) {
+            queryOptions.push(`&title=${term}`)
         }
         const urlToFetch = `${
             process.env.REACTEUR_MARVEL_API_URL
@@ -31,23 +31,6 @@ router.get('/allComics', async (req, res) => {
         /* Fetch data */
         const response = await axios.get(urlToFetch)
 
-        /* Add serach by id*/
-        if (id && (limit || skip || title)) {
-            res.status(400).json({
-                message: " id can't be use with limit, ski or title query",
-            })
-        }
-
-        if (id) {
-            const findSingleComics = response.data.results.find(
-                (singleComics) => singleComics._id.includes(id)
-            )
-            if (findSingleComics) {
-                response.data = findSingleComics
-            } else {
-                response.data = null
-            }
-        }
         res.status(200).json(response.data)
     } catch (error) {
         res.status(400).json({ message: error.message })
